@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const Post = require("../models/postsModel");
 
 // Endpoint to get all blog posts => GET /api/posts
 router.get("/", async (req, res) => {
@@ -14,8 +15,14 @@ router.get("/:id", async (req, res) => {
 });
 
 // Endpoint to add a new blog post => POST /api/posts
-router.post("/", (req, res) => {
-  res.status(200).json({ message: `You have posted a new blog!` });
+router.post("/", async (req, res) => {
+  try {
+    const post = new Post(req.body);
+    await post.save();
+    res.status(200).json({ success: true, post });
+  } catch (e) {
+    res.status(200).json({ success: false, error: e.message });
+  }
 });
 
 // Endpoint to update a blog post by :id => PUT /api/posts/:id
