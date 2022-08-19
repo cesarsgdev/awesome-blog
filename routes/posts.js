@@ -4,7 +4,12 @@ const Post = require("../models/postsModel");
 
 // Endpoint to get all blog posts => GET /api/posts
 router.get("/", async (req, res) => {
-  res.status(200).json({ message: `This is the route to get all posts...` });
+  try {
+    const posts = await Post.find();
+    res.status(200).json({ success: true, posts });
+  } catch (e) {
+    res.status(200).json({ success: false, message: e.message });
+  }
 });
 
 // Endpoint to get a single blog post by :id => GET /api/posts/:id
